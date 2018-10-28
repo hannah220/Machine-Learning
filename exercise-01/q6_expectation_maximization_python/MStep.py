@@ -42,15 +42,11 @@ def MStep(gamma, X):
 
     for k in range(0, K, 1):
         for n in range(0, N, 1):
-            #print('X[', n, ']:\n', X[n])
-            #print('means[', k, ']:\n', means[k])
-            
             dis = np.matrix(X[n] - means[k])
             total[k] += gamma[n][k] * np.dot(dis.T, dis)
         covariances[:, :, k] = 1/soft_num[k] * total[k]
     
-    #logLikelihood = getLogLikelihood(means, weights, covariances, X)
-    logLikelihood = 3
+    logLikelihood = getLogLikelihood(means, weights, covariances, X)
 
     #####Insert your code here for subtask 6c#####
     return weights, means, covariances, logLikelihood

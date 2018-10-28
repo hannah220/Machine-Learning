@@ -24,15 +24,10 @@ def getLogLikelihood(means, weights, covariances, X):
 
     for n in range(0, N, 1):
         for k in range(0, K, 1):
-            #print(n, k)
-            #print('-1 Covariances: \n', np.linalg.inv(covariances[:, :, k]))
             dis = np.matrix(X[n] - means[k])
-            #print('dis: \n', dis)
-            #print('dis.T: \n', dis.T)
             inv_cov = np.linalg.inv(covariances[:, :, k])
             det_cov = np.linalg.det(covariances[:, :, k])
             mul = np.linalg.multi_dot([dis, inv_cov, dis.T])
-            #print(mul)
             sub_total[n] += weights[k] * (1/(2 * pi * math.sqrt(det_cov))) * math.exp(-1/2 * mul)
 
         logLikelihood += np.log(sub_total[n])
