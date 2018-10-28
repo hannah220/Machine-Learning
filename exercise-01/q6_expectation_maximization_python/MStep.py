@@ -20,12 +20,12 @@ def MStep(gamma, X):
     # covariances    : Covariance matrices for each component(DxDxK).
 
     N = X.shape[0]           # number of samples
-    #N = 2
+    D = X.shape[1]
     K = 3                    # number of Gaussions
     soft_num = [0] * K
     weights = [0] * K
-    means = np.zeros((K, 2))
-    covariances = np.zeros((2, 2, K))
+    means = np.zeros((K, D))
+    covariances = np.zeros((D, D, K))
     total = [0] * K
     
     for k in range(0, K, 1):
@@ -42,6 +42,9 @@ def MStep(gamma, X):
 
     for k in range(0, K, 1):
         for n in range(0, N, 1):
+            #print('X[', n, ']:\n', X[n])
+            #print('means[', k, ']:\n', means[k])
+            
             dis = np.matrix(X[n] - means[k])
             total[k] += gamma[n][k] * np.dot(dis.T, dis)
         covariances[:, :, k] = 1/soft_num[k] * total[k]

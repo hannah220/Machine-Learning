@@ -20,8 +20,9 @@ def estGaussMixEM(data, K, n_iters, epsilon):
     # logLikelihood  : log-likelihood of the data given the model
 
     N = data.shape[0]
+    D = data.shape[1]
     weights = np.ones(K) / K
-    covariances = np.ndarray((2, 2, 3))
+    covariances = np.ndarray((D, D, K))
 
     kmeans = KMeans(n_clusters = K, n_init = 10).fit(data)
     cluster_idx = kmeans.labels_
@@ -36,7 +37,7 @@ def estGaussMixEM(data, K, n_iters, epsilon):
             dist = np.mean(euclidean_distances(data_cluster, [means[i]], squared=True)) 
             if dist < min_dist:
                 min_dist = dist
-        covariances[:, :, j] = np.eye(2) * min_dist
+        covariances[:, :, j] = np.eye(D) * min_dist
 
     for n in range(n_iters):
         _, gamma = EStep(means, covariances, weights, data)

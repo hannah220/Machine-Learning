@@ -22,6 +22,7 @@ def EStep(means, covariances, weights, X):
     # gamma          : NxK matrix of responsibilities for N datapoints and K Gaussians.
 
     N = X.shape[0]           # number of samples
+    D = X.shape[1]
     K = 3                    # number of Gaussions
     numerator = [0] * K
     sub_total = [0] * N
@@ -33,7 +34,7 @@ def EStep(means, covariances, weights, X):
             inv_cov = np.linalg.inv(covariances[:, :, k])
             det_cov = np.linalg.det(covariances[:, :, k])
             mul = np.linalg.multi_dot([dis, inv_cov, dis.T])
-            numerator[k] = weights[k] * (1/(2 * pi * math.sqrt(det_cov))) * math.exp(-1/2 * mul)
+            numerator[k] = weights[k] * (1/(pow(2 * pi, D/2) * math.sqrt(det_cov))) * math.exp(-1/2 * mul)
             sub_total[n] += weights[k] * (1/(2 * pi * math.sqrt(det_cov))) * math.exp(-1/2 * mul)
         for k in range(0, K, 1):
             gamma[n][k] = numerator[k] / sub_total[n]
