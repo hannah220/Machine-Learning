@@ -57,11 +57,11 @@ ttest = np.concatenate((np.ones(one['test'].shape[0]), (-1)*np.ones(three['test'
 print('w.shape is\n', w.shape)
 print('w is\n', w)
 print('b is\n', b)
-print('Xtest.shape is\n', Xtest.shape)
-print('Xtest is\n', Xtest)
+#print('Xtest.shape is\n', Xtest.shape)
+#print('Xtest is\n', Xtest)
 testresult = Xtest.dot(w.T) + b
 print('testresult.shape is\n', testresult.shape)
-print('testresult is\n', testresult)
+#print('testresult is\n', testresult)
 
 testresult[testresult < 0] = -1
 testresult[testresult >= 0] = 1
@@ -111,12 +111,12 @@ print('Train Error 3-vs-8: ', train_error) #TODO: num2str needed?
 Xtest = np.concatenate((three['test'], eight['test']))
 ttest = np.concatenate((np.ones(three['test'].shape[0]), (-1)*np.ones(eight['test'].shape[0])))
 
-testresult = Xtest.dot(w) + b
+testresult = Xtest.dot(w.T) + b
 
 testresult[testresult < 0] = -1
 testresult[testresult >= 0] = 1
-test_error = len(testresult[testresult != ttest]) / len(ttest)
-print('Test Error 3-vs-8: ', test_error)
+#test_error = len(testresult[testresult != ttest]) / len(ttest)
+#print('Test Error 3-vs-8: ', test_error)
 
 ## Visualize the weight vector W
 # positive values(in red) gives shape of 3

@@ -45,7 +45,7 @@ def svmlin(X, t, C, ex):
     P = matrix(H)
     t = np.matrix(t)
     A = matrix(t)
-    h0[0:N, 0] = one[0:N, 0]    
+    h0[0:N, 0] = zero[0:N, 0]    
     h0[N:2*N, 0] = c[0:N, 0]     # Quadratic programming
     h = matrix(h0)
     b0 = matrix(0.0)
@@ -54,7 +54,7 @@ def svmlin(X, t, C, ex):
     alpha = a
     print('alpha is\n', alpha['x'])
 
-    # Calculate hyperplane and bias
+    # Calculate hyperplane
     t = t.T
     for n in range(N):
         for d in range(dim):
@@ -67,22 +67,25 @@ def svmlin(X, t, C, ex):
     support_a = np.empty([0, 1])
     support_X = np.empty([0, dim], float)
     for n in range (N):
-        if alpha['x'][n] > 0:
+        if alpha['x'][n] > 10**(-4):   # Condition to be support vecoter?????????????
             # add this point to support vector
             support_num += 1
             support_t = np.vstack([support_t, t[n]])
             support_a = np.vstack([support_a, alpha['x'][n]])
             support_X = np.vstack([support_X, np.matrix(X[n, :])])
     print('support_num is\n', support_num)
+    print('support t is\n', support_t)
+    print('support a is\n', support_a)
+    print('support X is\n', support_X)
     
     # Calculate bias b
-    sub = np.zeros([1, support_num])
+    atxxn = np.zeros([1, support_num])
     b = 0
     for n in range (support_num):
         for m in range (support_num):
-            sub[0, n] += alpha['x'][m] * t[m] * np.dot(support_X[m, :], support_X[n, :].T)
-        #print('sub is\n', sub[0, n])
-        b += 1/support_num * (t[n] - sub[0, n])
+            atxxn[0, n] += support_a[m] * support_t[m] * np.dot(support_X[m, :], support_X[n, :].T)
+        b += support_t[n] - atxxn[0, n]   ################### not t[n]!!!????????
+    b *= 1/support_num
     
     # Classify xi
     classifier = np.zeros([1, N])
@@ -100,7 +103,6 @@ def svmlin(X, t, C, ex):
             # this point is missclassfied (here xi does not exist)
             xi[0, n] = abs(t[n] - classifier[0, n])
             miss+=1
-            #print('xi on the missclassfied point is\n', xi[0, n])
     print('miss is\n', miss)
 
     # Find out slack points (points inside the margin)
@@ -116,7 +118,7 @@ def svmlin(X, t, C, ex):
 
     # List support vectors
     for n in range(N):
-        if t[n] * classifier[0, n] -1 + xi[0, n] == 0 or alpha['x'][n] > 0:
+        if t[n] * classifier[0, n] -1 + xi[0, n] == 0 or alpha['x'][n] > 10**(-4):
             # this point is support vector
             sv[0, n] = True
         else:
